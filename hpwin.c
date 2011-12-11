@@ -10,7 +10,7 @@ const int step_y = (int)(SMALL_FONT_Y_LEN+0.5);
 const int bar_height = (int)(SMALL_FONT_Y_LEN-3);
 int hp_win_margin = 10;
 int hp_win_x_len = 200;
-int hp_win_y_len = 100;
+int hp_win_y_len = 120;
 int hp_win_x = 10;
 int hp_win_y = 20;
 
@@ -26,7 +26,7 @@ void display_hp_window()
 		if (!windows_on_top) {
 			our_root_win = game_root_win;
 		}
-		hp_win_y_len = step_y * 2 + hp_win_margin * 2;
+		hp_win_y_len = step_y * 3 + hp_win_margin * 2;
 		hp_win = create_window(win_hp, our_root_win, 0, hp_win_x, hp_win_y, hp_win_x_len, hp_win_y_len,
 			ELW_WIN_DEFAULT);
 
