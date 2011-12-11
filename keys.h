@@ -90,6 +90,7 @@ extern Uint32 K_ECDEBUGWIN;         /*!< open Eye Candy debug window */
 #endif /* ECDEBUGWIN */
 extern Uint32 K_EMOTES;             /*!< key used to toggle display of \ref emotes_window */
 extern Uint32 K_RANGINGWIN;         /*!< key used to toggle display of ranging win */
+extern Uint32 K_HPWIN;         /*!< key used to toggle display of healt/ether win */
 /*! @} */
 
 /*! \name Quickbar access keys */

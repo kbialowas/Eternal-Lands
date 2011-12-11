@@ -116,6 +116,7 @@ Uint32 K_ECDEBUGWIN=ALT|CTRL|'c';
 #endif
 Uint32 K_EMOTES=CTRL|'j';
 Uint32 K_RANGINGWIN=CTRL|'t';
+Uint32 K_HPWIN=CTRL|'d';
 
 static void add_key(Uint32 *key, Uint32 n)
 {
@@ -768,6 +769,8 @@ void read_key_config()
 		K_EMOTES = parse_key_string(&file_mem[t]);
 	if((t=get_string_occurance("#K_RANGINGWIN",file_mem,key_file_size,0))!=-1)
 		K_RANGINGWIN = parse_key_string(&file_mem[t]);
+	if((t=get_string_occurance("#K_HPWIN",file_mem,key_file_size,0))!=-1)
+		K_HPWIN = parse_key_string(&file_mem[t]);
 
 	free(file_mem);
 }

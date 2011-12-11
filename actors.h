@@ -677,6 +677,33 @@ static __inline__ int is_actor_barehanded(actor *act, int hand){
 		return (act->cur_weapon==WEAPON_NONE||act->cur_weapon==GLOVE_FUR||act->cur_weapon==GLOVE_LEATHER);
 }
 
+/*!
+ * \ingroup	display_actors
+ * \brief	Sets current health bar color (percent, multiplier, alpha)
+ *
+ * 		This function is used to set current health bar color as openGL current draw color
+ *
+ * \param	percent Percent of max material points actor currently got
+ * \param	multiplier Colors intensivity factor.
+ * \param	alpha Color alpha channel.
+ *
+ * \callgraph
+ */
+void set_health_color(float percent, float multiplier, float a);
+
+/*!
+ * \ingroup	display_actors
+ * \brief	Sets current ethereal bar color (percent, multiplier, alpha)
+ *
+ * 		This function is used to set current ethereal bar color as openGL current draw color
+ *
+ * \param	percent Percent of max ethereal points actor currently got
+ * \param	multiplier Colors intensivity factor.
+ * \param	alpha Color alpha channel.
+ *
+ * \callgraph
+ */
+void set_ether_color(float percent, float multiplier, float a);
 
 /*!
  * \ingroup	display_actors

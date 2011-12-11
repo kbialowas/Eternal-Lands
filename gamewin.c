@@ -27,6 +27,7 @@
 #include "global.h"
 #include "highlight.h"
 #include "hud.h"
+#include "hpwin.h"
 #include "init.h"
 #include "interface.h"
 #include "items.h"
@@ -1422,7 +1423,7 @@ void hide_all_windows(){
 		get_show_window(manufacture_win) > 0 || get_show_window(elconfig_win) > 0 || get_show_window(sigil_win) > 0 ||
 		get_show_window(tab_stats_win) > 0 || get_show_window(tab_help_win) > 0 || get_show_window(storage_win) > 0 ||
 		get_show_window(dialogue_win) > 0 || get_show_window(questlog_win) > 0 || (get_show_window(minimap_win) > 0 && !pin_minimap)
-		|| get_show_window(tab_info_win) > 0 || get_show_window(emotes_win) > 0 || get_show_window(range_win) > 0
+		|| get_show_window(tab_info_win) > 0 || get_show_window(emotes_win) > 0 || get_show_window(range_win) > 0 || get_show_window(hp_win) > 0
 	){	//Okay, hide the open ones.
 		if (get_window_showable(ground_items_win) > 0){
 			unsigned char protocol_name;
@@ -1515,6 +1516,12 @@ void hide_all_windows(){
 		} else {
 			were_open &= ~(1<<12);
 		}
+		if (get_window_showable(hp_win) > 0){
+			hide_window (hp_win);
+			were_open |= 1<<13;
+		} else {
+			were_open &= ~(1<<13);
+		}
 	} else {	//None were open, restore the ones that were open last time the key was pressed
 		if (were_open & 1<<0){
 			show_window (items_win);
@@ -1554,6 +1561,9 @@ void hide_all_windows(){
 		}
 		if (were_open & 1<<12){
 			show_window (questlog_win);
+		}
+		if (were_open & 1<<13){
+			show_window (hp_win);
 		}
 	}
 }
@@ -1931,6 +1941,10 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 	else if(key == K_RANGINGWIN)
 	{
 		view_window(&range_win, -1);
+	}
+	else if(key == K_HPWIN)
+	{
+		view_window(&hp_win, -1);
 	}
 	else if (key == K_SIT)
 	{

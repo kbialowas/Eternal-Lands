@@ -207,6 +207,13 @@ typedef struct
 	int ranging_win_x;
 	int ranging_win_y;
     /*! @} */
+
+   /*!
+     * \name Hp window loc
+     */    /*! @{ */
+	int hp_win_x;
+	int hp_win_y;
+    /*! @} */
 }bin_cfg;
 
 extern int auto_update; /*!<this flags signals whether or not autoupdates are performed at startup, or not. It requires a restart to have an effect. */
