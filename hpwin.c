@@ -14,9 +14,6 @@ int hp_win_y_len = 100;
 int hp_win_x = 10;
 int hp_win_y = 20;
 
-#define progress_bar_width 135
-#define progress_bar_height 10
-
 // forward declaration
 int display_hp_handler (window_info *win);
 
@@ -53,41 +50,42 @@ int display_hp_handler(window_info *win)
 	int numbers_x = bar_len + 2 * hp_win_margin;
 	int pos_y = hp_win_margin;
 
-	float hp_cur_len = bar_len * your_info.material_points.cur / (float)your_info.material_points.base;
-	float eth_cur_len = bar_len * your_info.ethereal_points.cur / (float)your_info.ethereal_points.base;
+	float hp_cur_percent = your_info.material_points.cur / (float)your_info.material_points.base;
+	float eth_cur_percent = your_info.ethereal_points.cur / (float)your_info.ethereal_points.base;
+	float hp_cur_len = bar_len * hp_cur_percent;
+	float eth_cur_len = bar_len * eth_cur_percent;
 
 	sprintf((char*)str,"%u/%u", your_info.material_points.cur, your_info.material_points.base);
-	set_health_color( your_info.material_points.cur/(float)your_info.material_points.base, 1.0f, 1.0f);
+	set_health_color( hp_cur_percent, 1.0f, 1.0f);
 	draw_string_small(numbers_x, pos_y, (unsigned char*)str,2);
 	
 	pos_y += step_y;
 	sprintf((char*)str,"%u/%u", your_info.ethereal_points.cur, your_info.ethereal_points.base);
-	set_ether_color( your_info.ethereal_points.cur/(float)your_info.ethereal_points.base, 1.0f, 1.0f);
+	set_ether_color( eth_cur_percent, 1.0f, 1.0f);
 	draw_string_small(numbers_x, pos_y, (unsigned char*)str,2);
-
 
 	glDisable(GL_TEXTURE_2D);
 
+	//draw current health and mana bars
 	pos_y = hp_win_margin;
 	glBegin(GL_QUADS);
-		set_health_color( your_info.material_points.cur/(float)your_info.material_points.base, 0.5f, 1.0f);
+		set_health_color( hp_cur_percent, 0.5f, 1.0f);
 		glVertex3i(hp_win_margin, pos_y+1,0);
 		glVertex3i(hp_win_margin+hp_cur_len, pos_y+1,0);
-		set_health_color( your_info.material_points.cur/(float)your_info.material_points.base, 1.0f, 1.0f);
+		set_health_color( hp_cur_percent, 1.0f, 1.0f);
 		glVertex3i(hp_win_margin+hp_cur_len, pos_y + bar_height,0);
 		glVertex3i(hp_win_margin, pos_y + bar_height,0);
 
-
-
 		pos_y += step_y;
-		set_ether_color( your_info.ethereal_points.cur/(float)your_info.ethereal_points.base, 0.5f, 1.0f);
+		set_ether_color( eth_cur_len, 0.5f, 1.0f);
 		glVertex3i(hp_win_margin, pos_y+1,0);
 		glVertex3i(hp_win_margin+eth_cur_len, pos_y+1,0);
-		set_ether_color( your_info.ethereal_points.cur/(float)your_info.ethereal_points.base, 1.0f, 1.0f);
+		set_ether_color( eth_cur_len, 1.0f, 1.0f);
 		glVertex3i(hp_win_margin+eth_cur_len, pos_y + bar_height,0);
 		glVertex3i(hp_win_margin, pos_y + bar_height,0);
 	glEnd();
 
+	//draw health and mana bars borders
 	pos_y = hp_win_margin;
 	glBegin(GL_LINES);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -95,17 +93,16 @@ int display_hp_handler(window_info *win)
 		glVertex3i(hp_win_margin + bar_len, pos_y,0);
 		glVertex3i(hp_win_margin, pos_y + bar_height,0);
 		glVertex3i(hp_win_margin + bar_len, pos_y + bar_height,0);
-
 		glVertex3i(hp_win_margin, pos_y,0);
 		glVertex3i(hp_win_margin, pos_y + bar_height,0);
 		glVertex3i(hp_win_margin + bar_len, pos_y,0);
 		glVertex3i(hp_win_margin + bar_len, pos_y + bar_height,0);
+
 		pos_y += step_y;
 		glVertex3i(hp_win_margin, pos_y,0);
 		glVertex3i(hp_win_margin + bar_len, pos_y,0);
 		glVertex3i(hp_win_margin, pos_y + bar_height,0);
 		glVertex3i(hp_win_margin + bar_len, pos_y + bar_height,0);
-
 		glVertex3i(hp_win_margin, pos_y,0);
 		glVertex3i(hp_win_margin, pos_y + bar_height,0);
 		glVertex3i(hp_win_margin + bar_len, pos_y,0);
