@@ -44,7 +44,7 @@ void display_hp_window()
 
 int display_hp_handler(window_info *win)
 {
-	char str[20];
+	char str[30];
 
 	int bar_len = (hp_win_x_len - 3 * hp_win_margin) / 2;
 	int numbers_x = bar_len + 2 * hp_win_margin;
@@ -64,8 +64,17 @@ int display_hp_handler(window_info *win)
 	set_ether_color( eth_cur_percent, 1.0f, 1.0f);
 	draw_string_small(numbers_x, pos_y, (unsigned char*)str,2);
 
-	glDisable(GL_TEXTURE_2D);
+	pos_y += step_y;
+	if (your_actor->fighting) {
+		glColor4f(1.0f,0.1f,0.1f,1.0f);
+		sprintf((char*)str,"Engaged in combat");
+	} else {
+		glColor4f(0.3f,0.3f,0.3f,0.5f);
+		sprintf((char*)str,"Not engaged in combat");
+	}
+	draw_string_small((hp_win_x_len - ((int)(SMALL_FONT_X_LEN)*strlen(str)))/2, pos_y, (unsigned char*)str,2);
 
+	glDisable(GL_TEXTURE_2D);
 	//draw current health and mana bars
 	pos_y = hp_win_margin;
 	glBegin(GL_QUADS);
