@@ -32,6 +32,7 @@
 #include "gamewin.h"
 #include "gl_init.h"
 #include "hud.h"
+#include "hpwin.h"
 #include "items.h"
 #include "item_lists.h"
 #include "keys.h"
@@ -295,6 +296,9 @@ void read_bin_cfg()
 	ranging_win_x=cfg_mem.ranging_win_x;
 	ranging_win_y=cfg_mem.ranging_win_y;
 
+	hp_win_x=cfg_mem.hp_win_x;
+	hp_win_y=cfg_mem.hp_win_y;
+
 	trade_menu_x=cfg_mem.trade_menu_x;
 	trade_menu_y=cfg_mem.trade_menu_y;
 
@@ -459,6 +463,14 @@ void save_bin_cfg()
 	} else {
 		cfg_mem.ranging_win_x=ranging_win_x;
 		cfg_mem.ranging_win_y=ranging_win_y;
+	}
+
+	if(hp_win >= 0) {
+		cfg_mem.hp_win_x=windows_list.window[hp_win].cur_x;
+		cfg_mem.hp_win_y=windows_list.window[hp_win].cur_y;
+	} else {
+		cfg_mem.hp_win_x=hp_win_x;
+		cfg_mem.hp_win_y=hp_win_y;
 	}
 
 	if(tab_help_win >= 0) {

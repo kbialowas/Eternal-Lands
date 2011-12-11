@@ -14,6 +14,7 @@
 #include "gamewin.h"
 #include "gl_init.h"
 #include "global.h"
+#include "hpwin.h"
 #include "init.h"
 #include "interface.h"
 #include "items.h"
@@ -971,6 +972,7 @@ void view_window(int * window, int id)
 #endif
 			else if(window==&questlog_win) display_questlog();
 			else if(window==&range_win) display_range_win();
+			else if(window==&hp_win) display_hp_window();
 		}
 	else toggle_window(*window);
 }

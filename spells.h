@@ -30,6 +30,14 @@ typedef enum {
 } spell_errors;
 /*! @} */
 
+typedef struct {
+	char spell_name[60];//The spell_name
+	Sint8 spell_image;//image_id
+	Sint8 spell_id;
+	Uint8 spell_str[30];
+	//to be difficult, we will store the entire string ready
+	//to be sent to the server, including CAST_SPELL and len bytes, len will be byte 2
+} mqbdata;
 
 /*!
  * \name windows handlers
@@ -56,8 +64,6 @@ extern int spell_result;
 
 extern Uint8 last_spell_str[20];
 extern int last_spell_len;
-
-
 
 /*!
  * \ingroup spells_window

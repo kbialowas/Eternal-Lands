@@ -364,6 +364,18 @@ void set_health_color(float percent, float multiplier, float a)
 	glColor4f(r*multiplier,g*multiplier,0.0f, a);
 }
 
+void set_ether_color(float percent, float multiplier, float a)
+{
+	float b;
+
+	b = 0.6f - percent*0.6f;
+
+	if(b<0.0f)b=0.0f;
+	else if(b>1.0f)b=1.0f;
+
+	glColor4f(b*multiplier, b*multiplier, 2.0f*multiplier, a);
+}
+
 void draw_actor_banner(actor * actor_id, float offset_z)
 {
 	unsigned char str[60];

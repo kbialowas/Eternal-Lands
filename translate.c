@@ -688,6 +688,7 @@ char	win_notepad[20],
 	win_minimap[20],
 	win_name_pass[30],
 	win_design[25],
+	win_hp[30],
 	ttab_controls[10],
 	ttab_audio[10],
 	ttab_hud[5],
@@ -1603,6 +1604,7 @@ void init_titles ()
 	add_xml_identifier (titles_str, "w_name_pass", win_name_pass, "Choose name and password", sizeof(win_name_pass));
 	add_xml_identifier (titles_str, "w_newchar", win_newchar, "New Character", sizeof(win_newchar));
 	add_xml_identifier (titles_str, "w_minimap", win_minimap, "Minimap", sizeof(win_minimap));
+	add_xml_identifier (titles_str, "w_hp", win_hp, "Mat/Eth points", sizeof(win_hp));
 	add_xml_identifier (titles_str, "tab_control", ttab_controls, "Controls", sizeof(ttab_controls));
 	add_xml_identifier (titles_str, "tab_audio", ttab_audio, "Audio", sizeof(ttab_audio));
 	add_xml_identifier (titles_str, "tab_hud", ttab_hud, "HUD", sizeof(ttab_hud));
