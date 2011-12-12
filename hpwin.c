@@ -6,7 +6,7 @@
 #include "gamewin.h"
 
 int hp_win = -1;
-const int step_y = (int)(SMALL_FONT_Y_LEN+0.5);
+const int step_y = (int)(SMALL_FONT_Y_LEN+1.0);
 const int bar_height = (int)(SMALL_FONT_Y_LEN-3);
 int hp_win_margin = 10;
 int hp_win_x_len = 200;
@@ -65,7 +65,7 @@ int display_hp_handler(window_info *win)
 	draw_string_small(numbers_x, pos_y, (unsigned char*)str,2);
 
 	pos_y += step_y;
-	if (your_actor->fighting) {
+	if (your_actor != NULL && your_actor->fighting) {
 		glColor4f(1.0f,0.1f,0.1f,1.0f);
 		sprintf((char*)str,"Engaged in combat");
 	} else {
