@@ -130,15 +130,6 @@ int spell_mini_x_len=0;
 int spell_mini_y_len=0;
 int spell_mini_rows=0;
 
-typedef struct {
-	char spell_name[60];//The spell_name
-	Sint8 spell_image;//image_id
-	Sint8 spell_id;
-	Uint8 spell_str[30];
-	//to be difficult, we will store the entire string ready
-	//to be sent to the server, including CAST_SPELL and len bytes, len will be byte 2
-} mqbdata;
-
 //QUICKSPELLS
 int clear_mouseover=0;
 int cast_mouseover=0;
