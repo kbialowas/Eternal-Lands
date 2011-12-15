@@ -1,11 +1,13 @@
 #include "actors.h"
 #include "asc.h"
 #include "font.h"
+#include "cursors.h"
 #include "hpwin.h"
 #include "hud.h"
 #include "interface.h"
 #include "item_lists.h"
 #include "items.h"
+#include "multiplayer.h"
 #include "textures.h"
 #include "translate.h"
 #include "spells.h"
@@ -17,7 +19,7 @@ const int step_y = (int)(SMALL_FONT_Y_LEN+1.0);
 const int bar_height = (int)(SMALL_FONT_Y_LEN-3);
 const int items_bar_height = 30;
 const int items_bar_slots = 6;
-const int num_spells_slots = 5;
+const int num_spells_slots = 6;
 int hp_win_margin = 10;
 int hp_win_x_len = 200;
 int hp_win_y_len = 0;
@@ -26,13 +28,15 @@ int hp_win_y = 20;
 
 int items_left, items_top, items_right, items_bottom;
 int spells_left, spells_top, spells_right, spells_bottom;
+int quickspell_over_hpwin = -1;
 
 int action_mode_before_change = -1;
 extern mqbdata * mqb_data[MAX_QUICKBAR_SLOTS+1];
 // forward declaration
 int display_hp_handler (window_info *win);
 int	click_hp_handler(window_info *win, int mx, int my, Uint32 flags);
-
+int mouseover_hp_handler(window_info *win, int mx, int my);
+void draw_spell_icon(int id,int x_start, int y_start, int gridsize, int alpha, int grayed);
 void display_hp_window()
 {
 	if(hp_win < 0)
@@ -49,6 +53,7 @@ void display_hp_window()
 
 		set_window_handler(hp_win, ELW_HANDLER_DISPLAY, &display_hp_handler );
 		set_window_handler(hp_win, ELW_HANDLER_CLICK, &click_hp_handler);
+		set_window_handler(hp_win, ELW_HANDLER_MOUSEOVER, &mouseover_hp_handler );
 
 		//cm_add(windows_list.window[hp_win].cm_id, cm_astro_menu_str, cm_astro_handler);
 	} 
@@ -75,6 +80,10 @@ int display_hp_handler(window_info *win)
 	float eth_cur_len = bar_len * eth_cur_percent;
 	int item_bar_start = (hp_win_x_len - (items_bar_slots * 30 + 1))/2;
 	Uint32 _cur_time = SDL_GetTicks(); /* grab a snapshot of current time */
+	int x,y;
+
+int quickspell_size = 23;
+int startSpells = (hp_win_x_len - (num_spells_slots * (quickspell_size + 5)))/2;
 
 	sprintf((char*)str,"%u/%u", your_info.material_points.cur, your_info.material_points.base);
 	set_health_color( hp_cur_percent, 1.0f, 1.0f);
@@ -150,8 +159,8 @@ int display_hp_handler(window_info *win)
 		if(item_list[i].quantity > 0)
 		{
 			float u_start,v_start,u_end,v_end;
-			int this_texture,cur_item,cur_pos;
-			int x_start,x_end,y_start,y_end, itmp;
+			int this_texture,cur_item;
+			int x_start,x_end,y_start,y_end;
 
 			//get the UV coordinates.
 			cur_item=item_list[i].image_id%25;
@@ -165,9 +174,7 @@ int display_hp_handler(window_info *win)
 			v_end=v_start-(float)50/256;
 #endif	/* NEW_TEXTURES */
 
-			//get the x and y
-			cur_pos=item_list[i].pos;
-					
+			//get the x and 
 			x_start= item_bar_start + 29*i;
 			x_end= x_start+27;
 			y_start= pos_y;
@@ -264,47 +271,82 @@ int display_hp_handler(window_info *win)
 	glEnd();
 
 	glEnable(GL_TEXTURE_2D);
-pos_y += 50;
-	//draw spell bar
-	int x,y,width;
 
-int quickspell_size = 30;
-int quickspell_over = -1;
-int startSpells = (hp_win_x_len - (num_spells_slots * 33 + 1))/2;
+	//draw spell bar
+
+pos_y += (quickspell_size*1.5);
+
 	glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_ALPHA_TEST);
-	//glAlphaFunc(GL_GREATER, 0.20f);
-	//glEnable(GL_BLEND);	// Turn Blending On
-	//glBlendFunc(GL_SRC_ALPHA,GL_DST_ALPHA);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER, 0.20f);
+	glEnable(GL_BLEND);	// Turn Blending On
+	glBlendFunc(GL_SRC_ALPHA,GL_DST_ALPHA);
 
 	for(i=1;i<num_spells_slots+1;i++) {
 		if(mqb_data[i] && mqb_data[i]->spell_name[0]){
-			x=i*33+startSpells;
+			x=(i-1)*(quickspell_size+5)+startSpells;
 			y=pos_y;
-			width=quickspell_size/2;
 			
-			if(quickspell_over==i){	//highlight if we are hovering over
+			if(quickspell_over_hpwin==i){	//highlight if we are hovering over
 				glColor4f(1.0f,1.0f,1.0f,1.0f);
 			} else {	//otherwise shade it a bit
 				glColor4f(1.0f,1.0f,1.0f,0.6f);
 			}
 
-			draw_spell_icon(mqb_data[i]->spell_image,x-width,y-width,quickspell_size,0,0);
+			draw_spell_icon(mqb_data[i]->spell_image,x,y,quickspell_size,0,0);
 		}
 	}
-
+	spells_top = pos_y;
+	spells_bottom = pos_y + quickspell_size;
+	spells_left = startSpells;
+	spells_right = (num_spells_slots)*(quickspell_size+5)+startSpells;;
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	//glDisable(GL_BLEND);	// Turn Blending Off
-	//glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);	// Turn Blending Off
+	glDisable(GL_ALPHA_TEST);
 
-	if(quickspell_over!=-1 && mqb_data[quickspell_over])
-		show_help(mqb_data[quickspell_over]->spell_name,-10-strlen(mqb_data[quickspell_over]->spell_name)*8,(quickspell_over-1)*30+10);
-	quickspell_over=-1;
+	if(quickspell_over_hpwin!=-1 && mqb_data[quickspell_over_hpwin])
+		show_help(mqb_data[quickspell_over_hpwin]->spell_name,(quickspell_over_hpwin-1)*(quickspell_size+5)+startSpells,pos_y+26);
+	quickspell_over_hpwin=-1;
 	return 1;
 }
 
 
 
 int	click_hp_handler(window_info *win, int mx, int my, Uint32 flags){
-	LOG_TO_CONSOLE(c_red1, "clicked");
+	char str[10];
+	int i;
+	if (mx > items_left && mx < items_right && my > items_top && my < items_bottom) {
+		i=(mx - items_left) / 29;
+		if(item_list[i].use_with_inventory)
+			{
+				str[0]=USE_INVENTORY_ITEM;
+				str[1]=item_list[i].pos;
+				my_tcp_send(my_socket,(Uint8 *)str,2);
+#ifdef NEW_SOUND
+				item_list[i].action = USE_INVENTORY_ITEM;
+#endif // NEW_SOUND
+				return 1;
+			}
+		return 1;
+	}
+	if (mx > spells_left && mx < spells_right && my > spells_top && my < spells_bottom) {
+		i = ((mx - spells_left) / 28)+1;
+		send_spell(mqb_data[i]->spell_str, mqb_data[i]->spell_str[1]+2);
+		return 1;
+	}
+	return 0;
+};
+
+int mouseover_hp_handler(window_info *win, int mx, int my) {
+	if (mx > items_left && mx < items_right && my > items_top && my < items_bottom) {
+		elwin_mouse=CURSOR_USE;
+		return 1;
+	}
+
+	if (mx > spells_left && mx < spells_right && my > spells_top && my < spells_bottom) {
+		quickspell_over_hpwin=((mx - spells_left) / 28)+1;
+		elwin_mouse=CURSOR_WAND;
+		return 1;
+	}
+	return 0;
 };
